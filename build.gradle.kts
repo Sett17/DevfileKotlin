@@ -29,6 +29,7 @@ kotlin {
         binaries {
             executable {
                 entryPoint = "main"
+                baseName = "dev"
             }
         }
     }

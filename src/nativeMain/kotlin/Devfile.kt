@@ -1,27 +1,50 @@
+import com.github.ajalt.clikt.completion.CompletionCandidates
 import kotlinx.coroutines.runBlocking
 import com.soywiz.korio.file.VfsFile
-import com.soywiz.korio.file.std.LocalVfs
-import com.soywiz.korio.file.std.LocalVfsV2
 import com.soywiz.korio.file.std.localCurrentDirVfs
-import com.github.ajalt.mordant.rendering.TextColors.*
-import com.github.ajalt.mordant.rendering.TextStyles
-import com.github.ajalt.mordant.rendering.TextStyles.*
+import com.soywiz.korio.file.std.tempVfs
 
 @ThreadLocal
 object Devfile {
   val vfs = localCurrentDirVfs.vfs
+  val ops = mutableSetOf<Operation>()
+  var completionCandidates = CompletionCandidates.Fixed(setOf())
 
   fun parse() {
     runBlocking {
-      var file = VfsFile(vfs, "dev.file")
+      var file = VfsFile(vfs, "Devfile")
       if (!file.exists()) {
-        file = VfsFile(vfs, "Devfile")
+        file = VfsFile(vfs, "dev.file")
         if (!file.exists()) {
-          error("Couldn't read Devfile or devfile", 2)
+          exitError("Couldn't read Devfile or dev.file", 2)
         }
       }
-      dbg(file)
 
+      var zOperation: Operation? = null
+      val zScript = StringBuilder()
+      file.readLines().forEach {
+        if (it.startsWith("***")) {
+          zOperation?.let { op ->
+            op.script = Script(zScript.trimEnd() .toString())
+            ops.add(op)
+          }
+          val name = it.trimStart('*').substringBefore('*')
+          val options = it.drop(name.length + 3).splitToSequence('*')
+          zOperation = Operation(name, options.toOpOptions())
+          zScript.clear()
+        } else if (zOperation != null) {
+          zScript.append(it)
+          zScript.append('\n')
+        }
+      }
+      zOperation?.let { op ->
+        op.script = Script(zScript.trimEnd().toString())
+        ops.add(op)
+      }
+      completionCandidates = CompletionCandidates.Fixed(ops.map { it.name.lowercase() }.toSet())
+      dbgExec {
+        ops.forEach(::dbg)
+      }
     }
   }
 }
