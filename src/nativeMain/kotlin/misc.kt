@@ -1,14 +1,21 @@
 import com.github.ajalt.clikt.output.CliktHelpFormatter
 import com.github.ajalt.clikt.output.HelpFormatter
+import com.github.ajalt.mordant.rendering.TextColors
 import com.github.ajalt.mordant.rendering.TextColors.green
 import com.github.ajalt.mordant.rendering.TextColors.yellow
 import com.github.ajalt.mordant.rendering.TextStyles.*
+import com.soywiz.klock.measureTime
+import kotlin.math.min
 import kotlin.system.exitProcess
 import kotlin.system.measureNanoTime
 
 fun exitError(s: String, exitCode: Int = 1) {
   t.forStdErr().danger(s)
   exitProcess(exitCode)
+}
+
+fun dev(a: Any?) {
+  t.println(TextColors.gray("DEV: ") + a.toString())
 }
 
 fun dbg(a: Any?) {
@@ -23,11 +30,15 @@ fun dbgExec(block: () -> Unit) {
   }
 }
 
+fun seperator() {
+  t.println((dim + TextColors.gray)("̶".repeat(min(t.info.width, 80))))
+}
+
 fun dbgTime(name: String, block: () -> Unit) {
   if (debugMode) {
-    measureNanoTime {
+    measureTime {
       block.invoke()
-    }.also { dbg("$name took ${it / 1e6}ms") }
+    }.also { dbg("$name took ${it.milliseconds}ms") }
   } else {
     block.invoke()
   }
@@ -42,3 +53,4 @@ class ColorHelpFormatter : CliktHelpFormatter() {
   override fun renderSectionTitle(title: String) = (bold + underline)(super.renderSectionTitle(title))
   override fun optionMetavar(option: HelpFormatter.ParameterHelp.Option) = green(super.optionMetavar(option))
 }
+

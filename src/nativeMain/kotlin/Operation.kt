@@ -1,12 +1,9 @@
-import com.github.ajalt.mordant.rendering.TextColors.yellow
-import com.github.ajalt.mordant.rendering.TextStyles.*
-import com.soywiz.korio.file.Vfs
-import com.soywiz.korio.file.VfsFile
-import com.soywiz.korio.file.VfsProcessHandler
-import com.soywiz.korio.file.std.cacheVfs
-import com.soywiz.korio.file.std.tempVfs
-import kotlinx.coroutines.runBlocking
-import platform.posix.exit
+import OpOptions.*
+import com.github.ajalt.mordant.rendering.TextColors
+import com.github.ajalt.mordant.rendering.TextColors.*
+import com.github.ajalt.mordant.rendering.TextStyles.dim
+import com.soywiz.klock.measureTime
+import kotlin.math.min
 
 class Operation(val name: String, val options: Sequence<OpOptions> = sequenceOf(), var script: Script = Script("")) {
 
@@ -33,30 +30,23 @@ class Operation(val name: String, val options: Sequence<OpOptions> = sequenceOf(
 
   fun execute(extraOptions: MutableSet<OpOptions> = mutableSetOf()) {
     extraOptions.addAll(options)
-    dbg("Trying to execute with options=${extraOptions.toList().size}:${extraOptions.joinToString(",")}")
-    if (extraOptions.contains(OpOptions.PRINT)) {
-      t.println(yellow(script.text))
+    if (extraOptions.contains(KEEP)) {
+      extraOptions.remove(DELETE)
     }
-    when (Platform.osFamily) {
-      OsFamily.LINUX -> {
-        dbgTime("creating and executing file") {
-          runBlocking {
-            VfsFile(tempVfs.vfs, "devfiles/").mkdir()
-            val tmpFile = VfsFile(tempVfs.vfs, "devfiles/${script.hashCode()}.dev")
-            tmpFile.writeLines(
-              listOf(
-                "shopt -s expand_aliases",
-                "source ~/.bash_aliases"
-              ) + script.text.lines()
-            )
-            platform.posix.system("/bin/bash ${tmpFile.absolutePath} ${if (extraOptions.contains(OpOptions.SILENT)) "> /dev/null" else ""}")
-            if (extraOptions.contains(OpOptions.DELETE) && !extraOptions.contains(OpOptions.KEEP)) tmpFile.delete()
-          }
-        }
-      }
-//      OsFamily.WINDOWS -> {}
-//      OsFamily.MACOSX -> {}
-      else           -> exitError("There is currently no support for executing operations on ${Platform.osFamily}", 38)
+    dev(green("running Operation '$name' with ${extraOptions.filter { it != DUMMY }.joinToString(",") { it.toStringShort() }}"))
+    dbg("Trying to execute with options=${extraOptions.toList().size}:${extraOptions.joinToString(",")}")
+    if (extraOptions.contains(PRINT)) {
+      t.println((yellow + dim)(script.text))
+    }
+    seperator()
+
+    // hier nen if mit scroll region dann
+    if (extraOptions.contains(TIME)) {
+      measureTime {
+        Specifics.execute(script, extraOptions)
+      }.also { seperator(); dev(yellow("Operation '$name' took ${it.millisecondsLong}ms")) }
+    } else {
+      Specifics.execute(script, extraOptions)
     }
   }
 }
@@ -66,8 +56,12 @@ enum class OpOptions(val option: String) {
   PRINT("p"),
   DELETE("d"),
   KEEP("k"),
-  DUMMY("DUMMY"),
+  TIME("t"),
+  DUMMY("DUMMY");
 
+  fun toStringShort(): String {
+    return super.toString().substring(0..0)
+  }
 }
 
 inline fun <reified T : Enum<T>, V> ((T) -> V).find(value: V): T? {
@@ -75,5 +69,5 @@ inline fun <reified T : Enum<T>, V> ((T) -> V).find(value: V): T? {
 }
 
 fun Sequence<String>.toOpOptions(): Sequence<OpOptions> {
-  return this.filter { it.isNotEmpty() }.map { OpOptions::option.find(it) ?: OpOptions.DUMMY.also { _ -> exitError("'$it' is not a valid option") } }
+  return this.filter { it.isNotEmpty() }.map { OpOptions::option.find(it) ?: DUMMY.also { _ -> exitError("'$it' is not a valid option") } }
 }

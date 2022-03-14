@@ -7,6 +7,8 @@ import com.soywiz.korio.file.std.tempVfs
 @ThreadLocal
 object Devfile {
   val vfs = localCurrentDirVfs.vfs
+  // only allowed to do this because this parse function is called in the main init, so I'm sure it's executed before any reference to this var
+  lateinit var devfile : VfsFile
   val ops = mutableSetOf<Operation>()
   var completionCandidates = CompletionCandidates.Fixed(setOf())
 
@@ -19,6 +21,7 @@ object Devfile {
           exitError("Couldn't read Devfile or dev.file", 2)
         }
       }
+      devfile = file
 
       var zOperation: Operation? = null
       val zScript = StringBuilder()
