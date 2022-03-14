@@ -1,40 +1,41 @@
 plugins {
-    kotlin("multiplatform") version "1.6.20-M1"
+  kotlin("multiplatform") version "1.6.20-M1"
 }
 
 group = "me.sett"
-version = "1.0-SNAPSHOT"
+version = "0.0.1"
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-    commonMainImplementation("com.github.ajalt.clikt:clikt:3.4.0")
-    commonMainImplementation("com.github.ajalt.mordant:mordant:2.0.0-beta5")
-    commonMainImplementation("com.soywiz.korlibs.korio:korio:2.6.2")
+  commonMainImplementation("com.github.ajalt.clikt:clikt:3.4.0")
+  commonMainImplementation("com.github.ajalt.mordant:mordant:2.0.0-beta5")
+  commonMainImplementation("com.soywiz.korlibs.korio:korio:2.6.2")
 }
 
 kotlin {
-    val hostOs = System.getProperty("os.name")
-    val isMingwX64 = hostOs.startsWith("Windows")
-    val nativeTarget = when {
-        hostOs == "Mac OS X" -> macosX64("native")
-        hostOs == "Linux" -> linuxX64("native")
-        isMingwX64 -> mingwX64("native")
-        else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
-    }
+  val hostOs = System.getProperty("os.name")
+  val isMingwX64 = hostOs.startsWith("Windows")
+  val nativeTarget = when {
+    hostOs == "Mac OS X" -> macosX64("native")
+    hostOs == "Linux"    -> linuxX64("native")
+    isMingwX64           -> mingwX64("native")
+    else                 -> throw GradleException("Host OS is not supported in Kotlin/Native.")
+  }
 
-    nativeTarget.apply {
-        binaries {
-            executable {
-                entryPoint = "main"
-                baseName = "dev"
-            }
-        }
+  nativeTarget.apply {
+    binaries {
+      executable {
+        freeCompilerArgs = freeCompilerArgs + "-Xdisable-phases=EscapeAnalysis"
+        entryPoint = "main"
+        baseName = "dev"
+      }
     }
-    sourceSets {
-        val nativeMain by getting
-        val nativeTest by getting
-    }
+  }
+  sourceSets {
+    val nativeMain by getting
+    val nativeTest by getting
+  }
 }
