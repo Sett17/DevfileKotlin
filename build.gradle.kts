@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "me.sett"
-version = "0.0.1"
+version = "rolling"
 
 repositories {
   mavenCentral()

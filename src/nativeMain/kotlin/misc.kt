@@ -44,7 +44,7 @@ fun dbgTime(name: String, block: () -> Unit) {
   }
 }
 
-class ColorHelpFormatter : CliktHelpFormatter() {
+class ColorHelpFormatter : CliktHelpFormatter(showDefaultValues = true) {
   override fun renderHelpText(help: String, tags: Map<String, String>) = dim(super.renderHelpText(help, tags))
   override fun renderTag(tag: String, value: String) = green(super.renderTag(tag, value))
   override fun renderOptionName(name: String) = yellow(super.renderOptionName(name))
