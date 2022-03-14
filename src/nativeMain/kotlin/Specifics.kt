@@ -37,8 +37,8 @@ object Specifics {
         VfsFile(tempVfs.vfs, "devfiles/").mkdir()
         val tmpFile = VfsFile(tempVfs.vfs, "devfiles/${script.hashCode()}${extension}")
         tmpFile.writeLines(prefixLines + script.text.lines() + suffixLines)
-        system("$howToExec ${tmpFile.absolutePath} ${if (options.contains(OpOptions.SILENT)) silence else ""}")
-        if (options.contains(OpOptions.DELETE) && !options.contains(OpOptions.KEEP)) tmpFile.delete()
+        system("$howToExec ${tmpFile.absolutePath} ${if (OpOptions.QUIET in options) silence else ""}")
+        if (OpOptions.KEEP !in options) tmpFile.delete()
       }
     }
   }
