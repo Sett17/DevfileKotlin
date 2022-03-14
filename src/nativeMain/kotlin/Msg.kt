@@ -12,8 +12,8 @@ object Msg {
       "All single letter options can also be used inside the Devfile. For more information see REFERENCE.md"
 
   const val printOptionHelp = "Prints the corresponding script for the operation and execute it"
-  const val silentOptionHelp = "Stops all std output of the operation. err output is unchanged"
-  const val deleteOptionHelp = "Either deletes or keeps the script after execution. -k takes precedence over -d [-d]"
+  const val quietOptionHelp = "Stops all std output of the operation. err output is unchanged"
+  const val keepOptionHelp = "Keeps the script file after execution [default off]"
   const val timeOptionHelp = "Times the execution if the Operation, and prints it afterwards"
   const val debugOptionHelp = "Enables output of debug messages for Devfile itself. This has to be its own option (or be the first one in concatenated options), because it is parsed separately. -DD prints even more Information"
   const val cleanTmpOptionHelp = "Deletes all .dev files in the platform corresponding tmp directory"

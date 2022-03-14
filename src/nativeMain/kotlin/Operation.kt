@@ -1,9 +1,7 @@
 import OpOptions.*
-import com.github.ajalt.mordant.rendering.TextColors
 import com.github.ajalt.mordant.rendering.TextColors.*
 import com.github.ajalt.mordant.rendering.TextStyles.dim
 import com.soywiz.klock.measureTime
-import kotlin.math.min
 
 class Operation(val name: String, val options: Sequence<OpOptions> = sequenceOf(), var script: Script = Script("")) {
 
@@ -30,18 +28,16 @@ class Operation(val name: String, val options: Sequence<OpOptions> = sequenceOf(
 
   fun execute(extraOptions: MutableSet<OpOptions> = mutableSetOf()) {
     extraOptions.addAll(options)
-    if (extraOptions.contains(KEEP)) {
-      extraOptions.remove(DELETE)
-    }
     dev(green("running Operation '$name' with ${extraOptions.filter { it != DUMMY }.joinToString(",") { it.toStringShort() }}"))
     dbg("Trying to execute with options=${extraOptions.toList().size}:${extraOptions.joinToString(",")}")
-    if (extraOptions.contains(PRINT)) {
+    if (PRINT in extraOptions) {
       t.println((yellow + dim)(script.text))
     }
     seperator()
 
     // hier nen if mit scroll region dann
-    if (extraOptions.contains(TIME)) {
+
+    if (TIME in extraOptions) {
       measureTime {
         Specifics.execute(script, extraOptions)
       }.also { seperator(); dev(yellow("Operation '$name' took ${it.millisecondsLong}ms")) }
@@ -52,9 +48,8 @@ class Operation(val name: String, val options: Sequence<OpOptions> = sequenceOf(
 }
 
 enum class OpOptions(val option: String) {
-  SILENT("s"),
+  QUIET("q"),
   PRINT("p"),
-  DELETE("d"),
   KEEP("k"),
   TIME("t"),
   DUMMY("DUMMY");
