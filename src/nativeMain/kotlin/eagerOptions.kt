@@ -10,26 +10,6 @@ import kotlinx.coroutines.runBlocking
 import kotlin.system.exitProcess
 
 fun CliktCommand.eagers() {
-  eagerOption(
-    "-D",
-    "-DD",
-    help = Msg.debugOptionHelp
-  ) {}
-
-  eagerOption("--clean-tmp", help = Msg.cleanTmpOptionHelp) {
-    runBlocking {
-      var howMany: Int
-      var freedBytes = 0L
-      tempVfs.vfs.listSimple("devfiles").also { howMany = it.size }.fastForEach {
-        freedBytes += it.stat().size
-        dbg("Deleting ${it.fullName}")
-        it.delete()
-      }
-      t.info("Deleted $howMany temporary dev files, to free up ${(freedBytes / 1024.0)} KiB")
-      exitProcess(0)
-    }
-  }
-
   eagerOption("-l", "--list", help = Msg.listOptionHelp) {
     t.println(CLILOGO)
     t.println(table {
@@ -50,5 +30,25 @@ fun CliktCommand.eagers() {
     Specifics.edit()
     exitProcess(0)
   }
+
+  eagerOption("--clean-tmp", help = Msg.cleanTmpOptionHelp) {
+    runBlocking {
+      var howMany: Int
+      var freedBytes = 0L
+      tempVfs.vfs.listSimple("devfiles").also { howMany = it.size }.fastForEach {
+        freedBytes += it.stat().size
+        dbg("Deleting ${it.fullName}")
+        it.delete()
+      }
+      t.info("Deleted $howMany temporary dev files, to free up ${(freedBytes / 1024.0)} KiB")
+      exitProcess(0)
+    }
+  }
+
+  eagerOption(
+    "-D",
+    "-DD",
+    help = Msg.debugOptionHelp
+  ) {}
 
 }

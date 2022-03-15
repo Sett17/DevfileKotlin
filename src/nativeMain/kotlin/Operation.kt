@@ -30,14 +30,16 @@ class Operation(val name: String, val options: Sequence<OpOptions> = sequenceOf(
   fun execute(extraOptions: MutableSet<OpOptions> = mutableSetOf()) {
     extraOptions.addAll(options)
     val extraOptionsList = extraOptions.filterNot { it == DUMMY }
+    if (CLEAN in extraOptions){
+      Specifics.execute(script, extraOptions)
+      return
+    }
     dev(green("running Operation '$name' ${if (extraOptionsList.isEmpty()) "" else "with"} ${extraOptionsList.joinToString(",") { it.toStringShort() }}"))
     dbg("Trying to execute with options=${extraOptionsList.size}:${extraOptionsList.joinToString(",")}")
     if (PRINT in extraOptions) {
       t.println((yellow + dim)(script.text))
     }
     seperator()
-
-    // hier nen if mit scroll region dann
 
     if (TIME in extraOptions) {
       measureTime {
@@ -46,7 +48,6 @@ class Operation(val name: String, val options: Sequence<OpOptions> = sequenceOf(
     } else {
       Specifics.execute(script, extraOptions)
     }
-    t.println("$esc[;r")
   }
 }
 
@@ -55,7 +56,7 @@ enum class OpOptions(val option: String) {
   PRINT("p"),
   KEEP("k"),
   TIME("t"),
-  NOSCROLL("n"),
+  CLEAN("c"),
   DUMMY("DUMMY");
 
   fun toStringShort(): String {
@@ -68,5 +69,5 @@ inline fun <reified T : Enum<T>, V> ((T) -> V).find(value: V): T? {
 }
 
 fun Sequence<String>.toOpOptions(): Sequence<OpOptions> {
-  return this.filter { it.isNotEmpty() }.map { OpOptions::option.find(it) ?: DUMMY.also { _ -> exitError("'$it' is not a valid option") } }
+  return this.filter { it.isNotEmpty() }.map { OpOptions::option.find(it) ?: DUMMY.also { _ -> exitError("'$it' is not a valid option. See 'Operation Options' under dev -h or all supported options") } }
 }

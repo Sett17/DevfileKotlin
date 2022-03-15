@@ -35,4 +35,4 @@ A script file is created from the Script segment of the specified operation. Thi
   - [ ] ~~DSL for output?~~
 - [x] info command
 - [ ] explanation support in Devfile
-- [ ] -c/--clean clean output for easy typing
+- [x] -c/--clean clean output for easy typing
