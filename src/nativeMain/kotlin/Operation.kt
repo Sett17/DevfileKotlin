@@ -1,5 +1,6 @@
 import OpOptions.*
-import com.github.ajalt.mordant.rendering.TextColors.*
+import com.github.ajalt.mordant.rendering.TextColors.green
+import com.github.ajalt.mordant.rendering.TextColors.yellow
 import com.github.ajalt.mordant.rendering.TextStyles.dim
 import com.soywiz.klock.measureTime
 
@@ -28,8 +29,9 @@ class Operation(val name: String, val options: Sequence<OpOptions> = sequenceOf(
 
   fun execute(extraOptions: MutableSet<OpOptions> = mutableSetOf()) {
     extraOptions.addAll(options)
-    dev(green("running Operation '$name' with ${extraOptions.filter { it != DUMMY }.joinToString(",") { it.toStringShort() }}"))
-    dbg("Trying to execute with options=${extraOptions.toList().size}:${extraOptions.joinToString(",")}")
+    val extraOptionsList = extraOptions.filterNot { it == DUMMY }
+    dev(green("running Operation '$name' ${if (extraOptionsList.isEmpty()) "" else "with"} ${extraOptionsList.joinToString(",") { it.toStringShort() }}"))
+    dbg("Trying to execute with options=${extraOptionsList.size}:${extraOptionsList.joinToString(",")}")
     if (PRINT in extraOptions) {
       t.println((yellow + dim)(script.text))
     }
@@ -44,6 +46,7 @@ class Operation(val name: String, val options: Sequence<OpOptions> = sequenceOf(
     } else {
       Specifics.execute(script, extraOptions)
     }
+    t.println("$esc[;r")
   }
 }
 
@@ -52,6 +55,7 @@ enum class OpOptions(val option: String) {
   PRINT("p"),
   KEEP("k"),
   TIME("t"),
+  NOSCROLL("n"),
   DUMMY("DUMMY");
 
   fun toStringShort(): String {

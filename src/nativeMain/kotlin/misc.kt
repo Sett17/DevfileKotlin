@@ -1,9 +1,11 @@
 import com.github.ajalt.clikt.output.CliktHelpFormatter
 import com.github.ajalt.clikt.output.HelpFormatter
+import com.github.ajalt.colormath.model.Ansi16
 import com.github.ajalt.mordant.rendering.TextColors
 import com.github.ajalt.mordant.rendering.TextColors.green
 import com.github.ajalt.mordant.rendering.TextColors.yellow
 import com.github.ajalt.mordant.rendering.TextStyles.*
+import com.github.ajalt.mordant.widgets.HorizontalRule
 import com.soywiz.klock.measureTime
 import kotlin.math.min
 import kotlin.system.exitProcess
@@ -30,8 +32,9 @@ fun dbgExec(block: () -> Unit) {
   }
 }
 
+const val esc = "\u001b"
 fun seperator() {
-  t.println((dim + TextColors.gray)("̶".repeat(min(t.info.width, 80))))
+  HorizontalRule()
 }
 
 fun dbgTime(name: String, block: () -> Unit) {

@@ -4,6 +4,26 @@ Tired of the weird quirks of make? Annoyed of making typos in long chained comma
 
 Well, here is a solution that comes as just an executable for each platform and with an extensive help command.
 
+## Install
+
+To install the latest release on Linux (this downloads the executable from github)
+```bash
+wget $(curl -s https://api.github.com/repos/sett17/devfile/releases | jq -r 'first.assets[] | select(.name=="dev.kexe") | .browser_download_url') -O ~/.local/bin/dev
+chmod +x ~/.local/bin/dev
+```
+For this to work `~/.local/bin/` needs to be in your PATH
+
+### Build
+build with gradle >7.3
+```bash
+gradle nativeBinaries
+```
+the executable will be in `./build/bin/native/releaseExecutable/dev.kexe`
+
+## How does this work?
+
+A script file is created from the Script segment of the specified operation. This file is then executed.
+
 # Planned Features
 
 - [ ] Execute other operations from an operation
@@ -14,3 +34,5 @@ Well, here is a solution that comes as just an executable for each platform and 
 - [ ] ~~scrolling region for commands (auto for long ones)~~ (opened issue)
   - [ ] ~~DSL for output?~~
 - [x] info command
+- [ ] explanation support in Devfile
+- [ ] -c/--clean clean output for easy typing
