@@ -11,6 +11,6 @@ Well, here is a solution that comes as just an executable for each platform and 
 - [x] add timing option
 - [ ] pass arguments to ops
 - [x] -e/--edit eager option to edit file with $editor
-- [ ] scrolling region for commands (auto for long ones)
-  - [ ] DSL for output?
+- [ ] ~~scrolling region for commands (auto for long ones)~~ (opened issue)
+  - [ ] ~~DSL for output?~~
 - [x] info command
