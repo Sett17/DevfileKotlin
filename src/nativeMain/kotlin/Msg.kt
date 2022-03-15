@@ -18,15 +18,18 @@ Tired of the weird quirks of make? Annoyed of making typos in long chained comma
 Well, here is a solution that comes as just an executable for each platform and with an extensive help command.""" +
 "\nby Sett | ${brightGreen("https://github.com/Sett17/Devfile")}"
 
+  const val operationOptionsHelp = "All of these options can also be used as option letters in the Devfile"
   const val printOptionHelp = "Prints the corresponding script for the operation and execute it"
   const val quietOptionHelp = "Stops all std output of the operation. err output is unchanged"
   const val keepOptionHelp = "Keeps the script file after execution"
-  const val timeOptionHelp = "Times the execution if the Operation, and prints it afterwards"
+  const val timeOptionHelp = "Times the execution of the Operation, and prints it afterwards"
+  const val cleanOptionHelp = "Removes all output related to Devfile. To e.g. use it with pipes. Some debug messages will still be printed, when the debug mode is enabled"
+
   const val debugOptionHelp = "Enables output of debug messages for Devfile itself. This has to be its own option (or be the first one in concatenated options), because it is parsed separately. -DD prints even more Information"
   const val cleanTmpOptionHelp = "Deletes all .dev files in the platform corresponding tmp directory"
   const val listOptionHelp = "Lists all operations and exit"
   const val editOptionHelp = "Opens the Devfile in an applicable Editor. \$EDITOR or vim under Linux, and the default editor for the format under Windows"
-  const val infoOptionHelp = "Shows information about the given operations"
+  const val infoOptionHelp = "Shows information about the given operations and then exits without executing it"
 
   const val opsArgumentHelp = "Which operation you want to execute, in the order you want them to execute"
 

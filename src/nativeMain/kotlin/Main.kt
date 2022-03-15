@@ -33,11 +33,12 @@ val t = Terminal()
 var debugMode = false
 var extendedDebugMode = false
 
-class OperationOptions : OptionGroup(name = "Operation Options", help = "All of these options can also be used as option letters in the Devfile") {
+class OperationOptions : OptionGroup(name = "Operation Options", help = Msg.operationOptionsHelp) {
   val printScript by option("-p", "--print", help = Msg.printOptionHelp).flag(default = false)
   val quiet by option("-q", "--quiet", help = Msg.quietOptionHelp).flag(default = false)
   val keep by option("-k", "--keep", help = Msg.keepOptionHelp).flag(default = false)
   val time by option("-t", "--time", help = Msg.timeOptionHelp).flag(default = false)
+  val clean by option("-c", "--clean", help = Msg.cleanOptionHelp).flag(default = false)
 }
 
 class DevfileCLI : CliktCommand(
@@ -87,6 +88,10 @@ class DevfileCLI : CliktCommand(
       }
       val options = mutableSetOf<OpOptions>()
       with(options) {
+        if (operationOptions.clean) {
+          add(OpOptions.CLEAN)
+          return@with
+        }
         if (operationOptions.printScript) add(OpOptions.PRINT)
         if (operationOptions.quiet) add(OpOptions.QUIET)
         if (operationOptions.keep) add(OpOptions.KEEP)
