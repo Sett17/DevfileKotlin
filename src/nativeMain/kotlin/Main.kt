@@ -48,7 +48,7 @@ class DevfileCLI : CliktCommand(
   ).multiple(required = true)
 
   init {
-    versionOption("1403Eve")
+    versionOption("1503Mid")
     context { helpFormatter = ColorHelpFormatter() }
 
     dbg("Devfile ${if (extendedDebugMode) "extended" else ""} debug output is enabled")
@@ -74,7 +74,7 @@ class DevfileCLI : CliktCommand(
         }
         t.println((underline + bold)("Script:"))
         op.script.text.lines().fastForEachWithIndex { index, value ->
-          t.println("${(index + 1).toString().padStart(3, ' ')} $value")
+          t.println(dim((index + 1).toString().padStart(3, ' ')) + " $value")
         }
         t.println()
         return@fastForEach
