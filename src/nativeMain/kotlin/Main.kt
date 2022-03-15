@@ -3,6 +3,8 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.context
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.multiple
+import com.github.ajalt.clikt.parameters.groups.OptionGroup
+import com.github.ajalt.clikt.parameters.groups.provideDelegate
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.mordant.rendering.TextColors
 import com.github.ajalt.mordant.rendering.TextColors.brightGreen
@@ -31,15 +33,19 @@ val t = Terminal()
 var debugMode = false
 var extendedDebugMode = false
 
+class OperationOptions : OptionGroup(name = "Operation Options", help = "All of these options can also be used as option letters in the Devfile") {
+  val printScript by option("-p", "--print", help = Msg.printOptionHelp).flag(default = false)
+  val quiet by option("-q", "--quiet", help = Msg.quietOptionHelp).flag(default = false)
+  val keep by option("-k", "--keep", help = Msg.keepOptionHelp).flag(default = false)
+  val time by option("-t", "--time", help = Msg.timeOptionHelp).flag(default = false)
+}
+
 class DevfileCLI : CliktCommand(
   name = "dev",
   help = Msg.helpText,
   printHelpOnEmptyArgs = true,
 ) {
-  val printScript by option("-p", "--print", help = Msg.printOptionHelp).flag(default = false)
-  val quiet by option("-q", "--quiet", help = Msg.quietOptionHelp).flag(default = false)
-  val keep by option("-k", "--keep", help = Msg.keepOptionHelp).flag(default = false)
-  val time by option("-t", "--time", help = Msg.timeOptionHelp).flag(default = false)
+  val operationOptions by OperationOptions()
   val info by option("-i", "--info", help = Msg.infoOptionHelp).flag(default = false)
 
   val ops: List<String> by argument(
@@ -81,10 +87,10 @@ class DevfileCLI : CliktCommand(
       }
       val options = mutableSetOf<OpOptions>()
       with(options) {
-        if (printScript) add(OpOptions.PRINT)
-        if (quiet) add(OpOptions.QUIET)
-        if (keep) add(OpOptions.KEEP)
-        if (time) add(OpOptions.TIME)
+        if (operationOptions.printScript) add(OpOptions.PRINT)
+        if (operationOptions.quiet) add(OpOptions.QUIET)
+        if (operationOptions.keep) add(OpOptions.KEEP)
+        if (operationOptions.time) add(OpOptions.TIME)
       }
       dbgExec { dbg(options) }
       op.execute(options)
