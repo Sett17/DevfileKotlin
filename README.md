@@ -28,7 +28,7 @@ A script file is created from the Script segment of the specified operation. Thi
 - [ ] Execute other operations from an operation
 - [ ] reuse script files if there are no changes
 - [x] add timing option
-- [ ] pass arguments to ops
+- [x] pass arguments to ops
 - [x] -e/--edit eager option to edit file with $editor
 - [ ] ~~scrolling region for commands (auto for long ones)~~ (opened issue)
   - [ ] ~~DSL for output?~~

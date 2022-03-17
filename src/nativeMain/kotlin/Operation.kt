@@ -36,7 +36,7 @@ class Operation(val name: String, val options: Sequence<OpOptions>, val argument
       Specifics.execute(script, extraOptions)
       return
     }
-    dev(green("running Operation '$name' ${if (extraOptionsList.isEmpty()) "" else "with"} ${extraOptionsList.joinToString(",") { it.toStringShort() }}"))
+    dev(green("running operation '$name' ${if (extraOptionsList.isEmpty()) "" else "with"} ${extraOptionsList.joinToString(",") { it.toStringShort() }}"))
     dbg("Trying to execute with options=${extraOptionsList.size}:${extraOptionsList.joinToString(",")}")
 
     dbg(operationArguments.toList().size)
