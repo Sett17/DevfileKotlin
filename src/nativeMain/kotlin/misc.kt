@@ -22,7 +22,7 @@ fun dev(a: Any?) {
 
 fun dbg(a: Any?) {
   if (debugMode) {
-    t.info("DEBUG: " + dim(a.toString()))
+    t.info("DBG: " + dim(a.toString()))
   }
 }
 
@@ -34,7 +34,7 @@ fun dbgExec(block: () -> Unit) {
 
 const val esc = "\u001b"
 fun seperator() {
-  HorizontalRule()
+  HorizontalRule().render(t, 80).also { dbg(it) }
 }
 
 fun dbgTime(name: String, block: () -> Unit) {

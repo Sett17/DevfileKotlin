@@ -31,7 +31,7 @@ Well, here is a solution that comes as just an executable for each platform and 
   const val editOptionHelp = "Opens the Devfile in an applicable Editor. \$EDITOR or vim under Linux, and the default editor for the format under Windows"
   const val infoOptionHelp = "Shows information about the given operations and then exits without executing it"
 
-  const val opsArgumentHelp = "Which operation you want to execute, in the order you want them to execute"
+  const val opsArgumentHelp = "Which operation you want to execute, in the order you want them to execute. The arguments name should be supplied in the same order as defied in the Devfile"
 
   fun errorNotAnOperation(s: Any) : String = "$s is not an operation! Use 'dev -l' to show all operations"
 }

@@ -8,14 +8,10 @@ import com.github.ajalt.clikt.parameters.groups.provideDelegate
 import com.github.ajalt.clikt.parameters.options.*
 import com.github.ajalt.mordant.rendering.TextColors
 import com.github.ajalt.mordant.rendering.TextColors.brightGreen
-import com.github.ajalt.mordant.rendering.TextStyles
 import com.github.ajalt.mordant.rendering.TextStyles.*
-import com.github.ajalt.mordant.table.row
-import com.github.ajalt.mordant.table.table
 import com.github.ajalt.mordant.terminal.Terminal
 import com.soywiz.kds.iterators.fastForEach
 import com.soywiz.kds.iterators.fastForEachWithIndex
-import kotlin.system.exitProcess
 import kotlin.test.assertNotNull
 
 val CLILOGO = bold(
@@ -50,7 +46,7 @@ class DevfileCLI : CliktCommand(
   val info by option("-i", "--info", help = Msg.infoOptionHelp).flag(default = false)
 
   val ops: List<String> by argument(
-    name = "OPERATIONS",
+    name = "OPERATIONS.ARGUMENT...",
     help = Msg.opsArgumentHelp
   ).multiple(required = true)
 
@@ -70,22 +66,32 @@ class DevfileCLI : CliktCommand(
   override fun run() {
 //    t.println(CLILOGO)
     ops.fastForEach { s ->
-      val op = Devfile.ops.find { it.name == s }
-      op ?: exitError(Msg.errorNotAnOperation(s))
+      val operationName = s.substringBefore('.')
+      dbg(s.drop(operationName.length))
+      val operationArguments = s.drop(operationName.length).splitToSequence('.').filter { it.isNotEmpty() }
+
+      val op = Devfile.ops.find { it.name == operationName }
+      op ?: exitError(Msg.errorNotAnOperation(operationName))
       assertNotNull(op)
+
       if (info) {
         dev(TextColors.green("Information about the operation '${op.name}'"))
         t.println((underline + bold)("Options:"))
         op.options.toList().also { if (it.isEmpty()) t.println("${" ".repeat(4)}/") }.forEach {
           t.println("${" ".repeat(4)}$it")
         }
+        t.println((underline + bold)("Arguments:"))
+        op.arguments.also { if (it.isEmpty()) t.println("${" ".repeat(4)}/") }.forEach {
+          t.println("${" ".repeat(4)}$it")
+        }
         t.println((underline + bold)("Script:"))
-        op.script.text.lines().fastForEachWithIndex { index, value ->
+        op.script.lines().fastForEachWithIndex { index, value ->
           t.println(dim((index + 1).toString().padStart(3, ' ')) + " $value")
         }
         t.println()
         return@fastForEach
       }
+
       val options = mutableSetOf<OpOptions>()
       with(options) {
         if (operationOptions.clean) {
@@ -98,7 +104,7 @@ class DevfileCLI : CliktCommand(
         if (operationOptions.time) add(OpOptions.TIME)
       }
       dbgExec { dbg(options) }
-      op.execute(options)
+      op.execute(options, operationArguments)
     }
   }
 }
