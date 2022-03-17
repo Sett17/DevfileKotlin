@@ -18,7 +18,7 @@ fun CliktCommand.eagers() {
       header { row("name", "options", "lines") }
       body {
         Devfile.ops.forEach {
-          row(it.name, it.options.map { o -> o.toStringShort() }.joinToString(" "), it.script.lineNumber)
+          row(it.name, it.options.map { o -> o.toStringShort() }.joinToString(" "), it.script.lines().size)
         }
       }
       captionBottom(TextStyles.dim("use 'dev -i OPERATION' to show the underlying script"))
