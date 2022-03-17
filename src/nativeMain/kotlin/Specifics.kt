@@ -6,7 +6,7 @@ import platform.posix.system
 object Specifics {
   private val currentOS = Platform.osFamily
 
-  fun execute(script: Script, options: Set<OpOptions>) {
+  fun execute(script: String, options: Set<OpOptions>) {
     dbgTime("creating and executing file") {
       runBlocking {
 
@@ -36,7 +36,7 @@ object Specifics {
 
         VfsFile(tempVfs.vfs, "devfiles/").mkdir()
         val tmpFile = VfsFile(tempVfs.vfs, "devfiles/${script.hashCode()}${extension}")
-        tmpFile.writeLines(prefixLines + script.text.lines() + suffixLines)
+        tmpFile.writeLines(prefixLines + script.lines() + suffixLines)
         system("$howToExec ${tmpFile.absolutePath} ${if (OpOptions.QUIET in options) silence else ""}")
         if (OpOptions.KEEP !in options) tmpFile.delete()
       }

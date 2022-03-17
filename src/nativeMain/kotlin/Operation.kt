@@ -2,9 +2,11 @@ import OpOptions.*
 import com.github.ajalt.mordant.rendering.TextColors.green
 import com.github.ajalt.mordant.rendering.TextColors.yellow
 import com.github.ajalt.mordant.rendering.TextStyles.dim
+import com.soywiz.kds.iterators.fastForEach
 import com.soywiz.klock.measureTime
+import kotlin.system.exitProcess
 
-class Operation(val name: String, val options: Sequence<OpOptions> = sequenceOf(), var script: Script = Script("")) {
+class Operation(val name: String, val options: Sequence<OpOptions>, val arguments: List<String> = listOf(), var script: String = "") {
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -27,17 +29,25 @@ class Operation(val name: String, val options: Sequence<OpOptions> = sequenceOf(
     return "Operation(name='$name', options=${options.toList().size}:${options.joinToString(",")}, script='hash:${script.hashCode()}')"
   }
 
-  fun execute(extraOptions: MutableSet<OpOptions> = mutableSetOf()) {
+  fun execute(extraOptions: MutableSet<OpOptions> = mutableSetOf(), operationArguments: Sequence<String>) {
     extraOptions.addAll(options)
     val extraOptionsList = extraOptions.filterNot { it == DUMMY }
-    if (CLEAN in extraOptions){
+    if (CLEAN in extraOptions) {
       Specifics.execute(script, extraOptions)
       return
     }
     dev(green("running Operation '$name' ${if (extraOptionsList.isEmpty()) "" else "with"} ${extraOptionsList.joinToString(",") { it.toStringShort() }}"))
     dbg("Trying to execute with options=${extraOptionsList.size}:${extraOptionsList.joinToString(",")}")
+
+    dbg(operationArguments.toList().size)
+    operationArguments.forEach{dbg("'$it'")}
+    operationArguments.forEachIndexed { index, s ->
+      val z = arguments.getOrNull(index)?.removePrefix("$") ?: exitError("No argument found in operation for #${index + 1} supplied argument")
+      script = script.replace("\\{\\{ *$z *}}".toRegex(RegexOption.IGNORE_CASE), s)
+    }
+
     if (PRINT in extraOptions) {
-      t.println((yellow + dim)(script.text))
+      t.println((yellow + dim)(script))
     }
     seperator()
 
@@ -68,6 +78,13 @@ inline fun <reified T : Enum<T>, V> ((T) -> V).find(value: V): T? {
   return enumValues<T>().firstOrNull { this(it) == value }
 }
 
-fun Sequence<String>.toOpOptions(): Sequence<OpOptions> {
-  return this.filter { it.isNotEmpty() }.map { OpOptions::option.find(it) ?: DUMMY.also { _ -> exitError("'$it' is not a valid option. See 'Operation Options' under dev -h or all supported options") } }
+fun Sequence<String>.parse(): Pair<Sequence<OpOptions>, List<String>> {
+  val z1 = this.filter {
+    it.isNotEmpty()
+  }
+  return Pair(
+    z1.filterNot { it.first() == '.' }
+      .map { OpOptions::option.find(it) ?: DUMMY.also { _ -> t.forStdErr().danger("'$it' is not a valid option. See 'Operation Options' under dev -h or all supported options") } },
+    z1.filter { it.first() == '.' }.toList()
+  )
 }

@@ -2,15 +2,17 @@ import com.github.ajalt.clikt.completion.CompletionCandidates
 import kotlinx.coroutines.runBlocking
 import com.soywiz.korio.file.VfsFile
 import com.soywiz.korio.file.std.localCurrentDirVfs
-import com.soywiz.korio.file.std.tempVfs
 
 @ThreadLocal
 object Devfile {
   val vfs = localCurrentDirVfs.vfs
+
   // only allowed to do this because this parse function is called in the main init, so I'm sure it's executed before any reference to this var
-  lateinit var devfile : VfsFile
+  lateinit var devfile: VfsFile
   val ops = mutableSetOf<Operation>()
   var completionCandidates = CompletionCandidates.Fixed(setOf())
+
+  var currentZOperation :Operation? = null
 
   fun parse() {
     runBlocking {
@@ -23,25 +25,28 @@ object Devfile {
       }
       devfile = file
 
-      var zOperation: Operation? = null
       val zScript = StringBuilder()
       file.readLines().forEach {
         if (it.startsWith("***")) {
-          zOperation?.let { op ->
-            op.script = Script(zScript.trimEnd() .toString())
+          currentZOperation?.let { op ->
+            op.script = zScript.trimEnd().toString()
             ops.add(op)
           }
           val name = it.trimStart('*').substringBefore('*')
           val options = it.drop(name.length + 3).splitToSequence('*')
-          zOperation = Operation(name, options.toOpOptions())
+          val z = options.parse()
+          currentZOperation = Operation(name, z.first, z.second)
+          if (currentZOperation != null && OpOptions.DUMMY in currentZOperation!!.options) {
+            exitError("Error parsing operation '${currentZOperation!!.name}'")
+          }
           zScript.clear()
-        } else if (zOperation != null) {
+        } else if (currentZOperation != null) {
           zScript.append(it)
           zScript.append('\n')
         }
       }
-      zOperation?.let { op ->
-        op.script = Script(zScript.trimEnd().toString())
+      currentZOperation?.let { op ->
+        op.script = zScript.trimEnd().toString()
         ops.add(op)
       }
       completionCandidates = CompletionCandidates.Fixed(ops.map { it.name.lowercase() }.toSet())

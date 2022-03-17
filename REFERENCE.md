@@ -3,13 +3,14 @@
 ## Overall Structure
 
 ```
-***OPERATION_NAME*OPTION_LETTER...
+***OPERATION_NAME*OPTION_LETTER...*.ARGUMENT_NAME...
 script line 1
 script line 2
 script line N
 
-***OPERATION_NAME*OPTION_LETTER...
+***OPERATION_NAME*OPTION_LETTER...*.ARGUMENT_NAME...
 script line 1
+{{ ARGUMENT_NAME }} line 2
 script line N
 
 ...
@@ -25,8 +26,16 @@ script line N
 ### OPTION_LETTER
   - MUST be one of the letters under the `Operation Options` segment in the help output
   - MUST be preceded with `*`
-  - CAN have a trailing `*`
+  - SHOULD have a trailing `*`
   - CAN appear multiple times per operation
+
+### ARGUMENT_NAME
+  - MUST start with a single `.`
+  - MUST have a corresponding placeholder in the script
+  - SHOULD only include alphanumeric characters
+
+  - the placeholder in the script SHOULD have 1 whitespace between the braces and the name
+  - there CAN be multiple or no whitespaces between the braces and the name
 
 ### Script
   - CAN have empty line/s at the end
@@ -44,8 +53,8 @@ echo -e '\e[32mInstalling Windows executable\e[0m'
 URL=$(curl -s https://api.github.com/repos/sett17/devfile/releases | jq -r 'first.assets[] | select(.name=="dev.exe") | .browser_download_url')
 wget $URL -O /mnt/c/Users/sett/Documents/bins/dev.exe
 
-***random*
-curl https://ciprand.p3p.repl.co/api?len=20&count=10 | \
+***random*p*.COUNT*
+curl https://ciprand.p3p.repl.co/api?len=20&count={{ COUNT }} | \
 jq -r '.'
 ```
 
