@@ -15,10 +15,15 @@ fun CliktCommand.eagers() {
     t.println(table {
       align = TextAlign.CENTER
       captionTop(TextStyles.bold("All parsed operations"))
-      header { row("name", "options", "lines") }
+      header { row("name", "options", "arguments", "lines") }
       body {
         Devfile.ops.forEach {
-          row(it.name, it.options.map { o -> o.toStringShort() }.joinToString(" "), it.script.lines().size)
+          row(
+            it.name,
+            it.options.map { o -> o.toStringShort() }.joinToString(" "),
+            it.arguments.joinToString(" "),
+            it.script.lines().size
+          )
         }
       }
       captionBottom(TextStyles.dim("use 'dev -i OPERATION' to show the underlying script"))
