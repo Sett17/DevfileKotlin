@@ -7,9 +7,14 @@ echo -e '\e[32mInstalling Windows executable\e[0m'
 URL=$(curl -s https://api.github.com/repos/sett17/devfile/releases | jq -r 'first.assets[] | select(.name=="dev.exe") | .browser_download_url')
 wget $URL -O /mnt/c/Users/sett/Documents/bins/dev.exe
 
-***timeing
+***build*t
+gradle nativeBinaries
+read -rsp $'Upload the kexe to release and press any key...\n' -n1 key
+cmd.exe /c C:\\Users\\sett\\.gradle\\wrapper\\dists\\gradle-7.3.3-bin\\6a41zxkdtcxs8rphpq6y0069z\\gradle-7.3.3\\bin\\gradle.bat nativeBinaries
+
+***time*t*.SLEEP
 echo 'OKE dikka'
-sleep 2
+sleep {{ SLEEP }}
 echo -e '\e[37mOKE dikka\e[0m'
 
 ***long*
@@ -18,8 +23,8 @@ for i in {0..10}; do
   sleep 1
 done
 
-***party*p
-for i in {0..30}; do
+***party|dikka das is cool*c*.length
+for i in {0..{{ length }}}; do
   echo -ne '\e[?5h'
   sleep .1
   echo -ne '\e[?5l'
@@ -28,3 +33,9 @@ done
 
 ***random*
 echo $RANDOM | sha256sum
+
+***test*.NAME*.fuck
+echo -e '\e[36mThis your name:\e[0m'
+echo '{{ NAME }}'
+echo hell {{ FUCK }}
+
