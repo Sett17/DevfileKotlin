@@ -1,6 +1,7 @@
 import com.github.ajalt.clikt.completion.completionOption
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.context
+import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.multiple
 import com.github.ajalt.clikt.parameters.groups.OptionGroup
@@ -54,16 +55,16 @@ class DevfileCLI : CliktCommand(
     versionOption("1703Eve")
     context { helpFormatter = ColorHelpFormatter() }
 
-    dbg("Devfile ${if (extendedDebugMode) "extended" else ""} debug output is enabled")
-    dbgTime("parsing") {
-      Devfile.parse()
-    }
-    dbg("${Devfile.ops.size} ops were parsed")
 
     eagers()
   }
 
   override fun run() {
+    dbg("Devfile ${if (extendedDebugMode) "extended" else ""} debug output is enabled")
+    dbgTime("parsing") {
+      Devfile.parse()
+    }
+    dbg("${Devfile.ops.size} ops were parsed")
 //    t.println(CLILOGO)
     ops.fastForEach { s ->
       val operationName = s.substringBefore('.')

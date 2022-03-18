@@ -37,6 +37,13 @@ fun CliktCommand.eagers() {
     exitProcess(0)
   }
 
+  eagerOption("--init", help = Msg.initOptionHelp) {
+    dbgTime("Creating Devfile") {
+      Devfile.create()
+      exitProcess(0)
+    }
+  }
+
   eagerOption("--clean-tmp", help = Msg.cleanTmpOptionHelp) {
     runBlocking {
       var howMany: Int
