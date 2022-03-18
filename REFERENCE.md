@@ -34,8 +34,7 @@ script line N
   - MUST have a corresponding placeholder in the script
   - SHOULD only include alphanumeric characters
 
-  - the placeholder in the script SHOULD have 1 whitespace between the braces and the name
-  - there CAN be multiple or no whitespaces between the braces and the name
+  - the placeholder in the script MUST have at least 1 whitespace between the braces and the name
 
 ### Script
   - CAN have empty line/s at the end

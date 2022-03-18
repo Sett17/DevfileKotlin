@@ -76,6 +76,7 @@ class DevfileCLI : CliktCommand(
 
       if (info) {
         dev(TextColors.green("Information about the operation '${op.name}'"))
+        t.println(op.description)
         t.println((underline + bold)("Options:"))
         op.options.toList().also { if (it.isEmpty()) t.println("${" ".repeat(4)}/") }.forEach {
           t.println("${" ".repeat(4)}$it")
