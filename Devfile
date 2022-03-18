@@ -1,0 +1,41 @@
+***install*t
+echo -e '\e[32mInstalling Linux executable\e[0m'
+URL=$(curl -s https://api.github.com/repos/sett17/devfile/releases | jq -r 'first.assets[] | select(.name=="dev.kexe") | .browser_download_url')
+wget $URL -O ~/.local/bin/dev
+chmod +x ~/.local/bin/dev
+echo -e '\e[32mInstalling Windows executable\e[0m'
+URL=$(curl -s https://api.github.com/repos/sett17/devfile/releases | jq -r 'first.assets[] | select(.name=="dev.exe") | .browser_download_url')
+wget $URL -O /mnt/c/Users/sett/Documents/bins/dev.exe
+
+***build*t
+gradle nativeBinaries
+read -rsp $'Upload the kexe to release and press any key...\n' -n1 key
+cmd.exe /c C:\\Users\\sett\\.gradle\\wrapper\\dists\\gradle-7.3.3-bin\\6a41zxkdtcxs8rphpq6y0069z\\gradle-7.3.3\\bin\\gradle.bat nativeBinaries
+
+***time*t*.SLEEP
+echo 'OKE dikka'
+sleep {{ SLEEP }}
+echo -e '\e[37mOKE dikka\e[0m'
+
+***long*
+for i in {0..10}; do
+  echo "An anger can hardly be considered a fusile rose without also being a melody. The fifth of a wine becomes a bushy english. Their leo was, in this moment, an unclear pin. As far as we can estimate, a pond of the uganda is assumed to be a chary weeder. Taxis are headstrong airports. An aftermath sees a quart as a diplex fold. In recent years, their postage was, in this moment, a quartile employee. The colons could be said to resemble taillike ex-wives.An offish basket's anethesiologist comes with it the thought that the frugal sprout is a cardigan. However, authors often misinterpret the respect as a benzal seeder, when in actuality it feels more like a furcate area. A rugby is a bobcat from the right perspective. A museum is a thing's trapezoid. An archeology of the giant is assumed to be an irate locust. Some posit the mournful milk to be less than coccal."
+  sleep 1
+done
+
+***party|dikka das is cool*c*.length
+for i in {0..{{ length }}}; do
+  echo -ne '\e[?5h'
+  sleep .1
+  echo -ne '\e[?5l'
+  sleep .1
+done
+
+***random*
+echo $RANDOM | sha256sum
+
+***test*.NAME*.fuck
+echo -e '\e[36mThis your name:\e[0m'
+echo '{{ NAME }}'
+echo hell {{ FUCK }}
+
