@@ -2,6 +2,7 @@ import com.github.ajalt.clikt.completion.CompletionCandidates
 import kotlinx.coroutines.runBlocking
 import com.soywiz.korio.file.VfsFile
 import com.soywiz.korio.file.std.localCurrentDirVfs
+import com.soywiz.korio.util.substringAfterOrNull
 
 @ThreadLocal
 object Devfile {
@@ -32,10 +33,14 @@ object Devfile {
             op.script = zScript.trimEnd().toString()
             ops.add(op)
           }
-          val name = it.trimStart('*').substringBefore('*')
-          val options = it.drop(name.length + 3).splitToSequence('*')
+          val nameDescription = it.trimStart('*').substringBefore('*')
+          dbg("both: $nameDescription")
+          val name = nameDescription.substringBefore("|")
+          val description = nameDescription.substringAfterOrNull("|") ?: ""
+          dbg("description: $description")
+          val options = it.drop(nameDescription.length + 3).splitToSequence('*')
           val z = options.parse()
-          currentZOperation = Operation(name, z.first, z.second)
+          currentZOperation = Operation(name, z.first, z.second, description = description)
           if (currentZOperation != null && OpOptions.DUMMY in currentZOperation!!.options) {
             exitError("Error parsing operation '${currentZOperation!!.name}'")
           }
