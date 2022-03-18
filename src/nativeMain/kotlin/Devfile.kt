@@ -34,10 +34,8 @@ object Devfile {
             ops.add(op)
           }
           val nameDescription = it.trimStart('*').substringBefore('*')
-          dbg("both: $nameDescription")
           val name = nameDescription.substringBefore("|")
           val description = nameDescription.substringAfterOrNull("|") ?: ""
-          dbg("description: $description")
           val options = it.drop(nameDescription.length + 3).splitToSequence('*')
           val z = options.parse()
           currentZOperation = Operation(name, z.first, z.second, description = description)
