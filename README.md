@@ -26,6 +26,7 @@ A script file is created from the Script segment of the specified operation. Thi
 # Planned Features
 
 - [ ] Execute other operations from an operation
+- [ ] support arguments with qutoes
 - [ ] reuse script files if there are no changes
 - [x] add timing option
 - [x] pass arguments to ops

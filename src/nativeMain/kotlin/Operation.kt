@@ -6,7 +6,7 @@ import com.soywiz.kds.iterators.fastForEach
 import com.soywiz.klock.measureTime
 import kotlin.system.exitProcess
 
-class Operation(val name: String, val options: Sequence<OpOptions>, val arguments: List<String> = listOf(), var script: String = "") {
+class Operation(val name: String, val options: Sequence<OpOptions>, val arguments: List<String> = listOf(), var script: String = "", val description: String = "") {
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -26,7 +26,7 @@ class Operation(val name: String, val options: Sequence<OpOptions>, val argument
   }
 
   override fun toString(): String {
-    return "Operation(name='$name', options=${options.toList().size}:${options.joinToString(",")}, script='hash:${script.hashCode()}')"
+    return "Operation(name='$name', options=${options.toList().size}:${options.joinToString(",")}, script='hash:${script.hashCode()}', description='$description')"
   }
 
   fun execute(extraOptions: MutableSet<OpOptions> = mutableSetOf(), operationArguments: Sequence<String>) {
@@ -40,7 +40,7 @@ class Operation(val name: String, val options: Sequence<OpOptions>, val argument
     dbg("Trying to execute with options=${extraOptionsList.size}:${extraOptionsList.joinToString(",")}")
 
     dbg(operationArguments.toList().size)
-    operationArguments.forEach{dbg("'$it'")}
+    operationArguments.forEach { dbg("'$it'") }
     operationArguments.forEachIndexed { index, s ->
       val z = arguments.getOrNull(index)?.removePrefix("$") ?: exitError("No argument found in operation for #${index + 1} supplied argument")
       script = script.replace("\\{\\{ *$z *}}".toRegex(RegexOption.IGNORE_CASE), s)
