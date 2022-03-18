@@ -13,7 +13,7 @@ object Devfile {
   val ops = mutableSetOf<Operation>()
   var completionCandidates = CompletionCandidates.Fixed(setOf())
 
-  var currentZOperation :Operation? = null
+  var currentZOperation: Operation? = null
 
   fun parse() {
     runBlocking {
@@ -25,9 +25,8 @@ object Devfile {
         }
       }
       devfile = file
-
       val zScript = StringBuilder()
-      file.readLines().forEach {
+      devfile.readLines().forEach {
         if (it.startsWith("***")) {
           currentZOperation?.let { op ->
             op.script = zScript.trimEnd().toString()
@@ -56,6 +55,24 @@ object Devfile {
       dbgExec {
         ops.forEach(::dbg)
       }
+    }
+  }
+
+  fun create() {
+    runBlocking {
+      var file = VfsFile(vfs, "dev.file")
+      if (file.exists()) {
+        exitError("There is already a Devfile present. To print out all operations use 'dev -l'", 1)
+      }
+      file = VfsFile(vfs, "Devfile")
+      if (file.exists()) {
+        exitError("There is already a Devfile present. To print out all operations use 'dev -l'", 1)
+      }
+      dev("Creating Devfile with example operation")
+      file.writeString(
+        """***op|Automatically generated operation*p*.NAME*
+echo -e "\e[31m\e[1m!!! {{ NAME }} still needs to implement an operation here !!!\e[0m""""
+      )
     }
   }
 }

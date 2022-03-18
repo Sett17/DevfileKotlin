@@ -36,3 +36,4 @@ A script file is created from the Script segment of the specified operation. Thi
 - [x] info command
 - [x] explanation support in Devfile
 - [x] -c/--clean clean output for easy typing
+- [x] --init eagerOption to create devfile
