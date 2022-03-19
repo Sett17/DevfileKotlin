@@ -22,18 +22,3 @@ the executable will be in `./build/bin/native/releaseExecutable/dev.kexe`
 ## How does this work?
 
 A script file is created from the Script segment of the specified operation. This file is then executed.
-
-# Planned Features
-
-- [ ] Execute other operations from an operation
-- [ ] support arguments with qutoes
-- [ ] reuse script files if there are no changes
-- [x] add timing option
-- [x] pass arguments to ops
-- [x] -e/--edit eager option to edit file with $editor
-- [ ] scrolling region for commands (auto for long ones)
-  - [ ] DSL for output?
-- [x] info command
-- [x] explanation support in Devfile
-- [x] -c/--clean clean output for easy typing
-- [x] --init eagerOption to create devfile
