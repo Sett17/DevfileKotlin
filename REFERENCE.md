@@ -11,6 +11,7 @@ script line N
 ***OPERATION_NAME*OPTION_LETTER...*.ARGUMENT_NAME...
 script line 1
 {{ ARGUMENT_NAME }} line 2
+${DEV_ARGUMENT_NAME:-default} line 3
 script line N
 
 ...
@@ -38,6 +39,7 @@ script line N
   - SHOULD only include alphanumeric characters
 
   - the placeholder in the script MUST have at least 1 whitespace between the braces and the name
+  - arguments are also places in the script as variables in the form of `DEV_VARIABLENAME` (all uppercase)
 
 ### Script
   - CAN have empty line/s at the end
@@ -56,7 +58,7 @@ URL=$(curl -s https://api.github.com/repos/sett17/devfile/releases | jq -r 'firs
 wget $URL -O /mnt/c/Users/sett/Documents/bins/dev.exe
 
 ***random*p*.COUNT*
-curl https://ciprand.p3p.repl.co/api?len=20&count={{ COUNT }} | \
+curl https://ciprand.p3p.repl.co/api?len=20&count=${DEV_COUNT:-5} | \
 jq -r '.'
 ```
 
