@@ -2,9 +2,7 @@ import OpOptions.*
 import com.github.ajalt.mordant.rendering.TextColors.green
 import com.github.ajalt.mordant.rendering.TextColors.yellow
 import com.github.ajalt.mordant.rendering.TextStyles.dim
-import com.soywiz.kds.iterators.fastForEach
 import com.soywiz.klock.measureTime
-import kotlin.system.exitProcess
 
 class Operation(val name: String, val options: Sequence<OpOptions>, val arguments: List<String> = listOf(), var script: String = "", val description: String = "") {
 
@@ -32,19 +30,20 @@ class Operation(val name: String, val options: Sequence<OpOptions>, val argument
   fun execute(extraOptions: MutableSet<OpOptions> = mutableSetOf(), operationArguments: Sequence<String>) {
     extraOptions.addAll(options)
     val extraOptionsList = extraOptions.filterNot { it == DUMMY }
+
+    val argumentMap = mutableMapOf<String, String>()
+    operationArguments.forEachIndexed { index, s ->
+      val z = arguments.getOrNull(index)?.removePrefix(".") ?: exitError("No argument found in operation for #${index + 1} supplied argument")
+      argumentMap[z as String] = s
+      script = script.replace("\\{\\{ *$z *}}".toRegex(RegexOption.IGNORE_CASE), s)
+    }
+
     if (CLEAN in extraOptions) {
-      Specifics.execute(script, extraOptions)
+      Specifics.execute(script, extraOptions, argumentMap)
       return
     }
     dev(green("running operation '$name' ${if (extraOptionsList.isEmpty()) "" else "with"} ${extraOptionsList.joinToString(",") { it.toStringShort() }}"))
     dbg("Trying to execute with options=${extraOptionsList.size}:${extraOptionsList.joinToString(",")}")
-
-    dbg(operationArguments.toList().size)
-    operationArguments.forEach { dbg("'$it'") }
-    operationArguments.forEachIndexed { index, s ->
-      val z = arguments.getOrNull(index)?.removePrefix("$") ?: exitError("No argument found in operation for #${index + 1} supplied argument")
-      script = script.replace("\\{\\{ *$z *}}".toRegex(RegexOption.IGNORE_CASE), s)
-    }
 
     if (PRINT in extraOptions) {
       t.println((yellow + dim)(script))
@@ -53,10 +52,10 @@ class Operation(val name: String, val options: Sequence<OpOptions>, val argument
 
     if (TIME in extraOptions) {
       measureTime {
-        Specifics.execute(script, extraOptions)
+        Specifics.execute(script, extraOptions, argumentMap)
       }.also { seperator(); dev(yellow("Operation '$name' took ${it.millisecondsLong}ms")) }
     } else {
-      Specifics.execute(script, extraOptions)
+      Specifics.execute(script, extraOptions, argumentMap)
     }
   }
 }
