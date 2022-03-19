@@ -6,7 +6,7 @@ import platform.posix.system
 object Specifics {
   private val currentOS = Platform.osFamily
 
-  fun execute(script: String, options: Set<OpOptions>) {
+  fun execute(script: String, options: Set<OpOptions>, argumentMap: MutableMap<String, String>) {
     dbgTime("creating and executing file") {
       runBlocking {
 
@@ -18,13 +18,13 @@ object Specifics {
 
         when (currentOS) {
           OsFamily.LINUX   -> {
-            prefixLines = listOf("shopt -s expand_aliases", "source ~/.bash_aliases")
+            prefixLines = listOf("shopt -s expand_aliases", "source ~/.bash_aliases") + argumentMap.map { "DEV_${it.key.uppercase()}=${it.value}" }
             howToExec = "/bin/bash"
             silence = "> /dev/null"
             extension = ".dev"
           }
           OsFamily.WINDOWS -> {
-            prefixLines = listOf("@echo off")
+            prefixLines = listOf("@echo off") + argumentMap.map { "set DEV_${it.key.uppercase()}=${it.value}" }
             suffixLines = listOf("@echo on")
             howToExec = ""
             silence = ">NUL"
