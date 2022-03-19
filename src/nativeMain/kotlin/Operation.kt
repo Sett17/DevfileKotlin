@@ -48,12 +48,12 @@ class Operation(val name: String, val options: Sequence<OpOptions>, val argument
     if (PRINT in extraOptions) {
       t.println((yellow + dim)(script))
     }
-    seperator()
+    separator()
 
     if (TIME in extraOptions) {
       measureTime {
         Specifics.execute(script, extraOptions, argumentMap)
-      }.also { seperator(); dev(yellow("Operation '$name' took ${it.millisecondsLong}ms")) }
+      }.also { separator(); dev(yellow("Operation '$name' took ${it.millisecondsLong}ms")) }
     } else {
       Specifics.execute(script, extraOptions, argumentMap)
     }
