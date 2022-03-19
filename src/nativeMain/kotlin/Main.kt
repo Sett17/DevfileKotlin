@@ -56,16 +56,16 @@ class DevfileCLI : CliktCommand(
     versionOption("1903Mor")
     context { helpFormatter = ColorHelpFormatter() }
 
-
-    eagers()
-  }
-
-  override fun run() {
     dbg("Devfile ${if (extendedDebugMode) "extended" else ""} debug output is enabled")
     dbgTime("parsing") {
       Devfile.parse()
     }
     dbg("${Devfile.ops.size} ops were parsed")
+
+    eagers()
+  }
+
+  override fun run() {
 //    t.println(CLILOGO)
     ops.fastForEach { s ->
       val operationName = s.substringBefore('.')
