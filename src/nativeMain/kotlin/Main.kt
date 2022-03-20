@@ -17,11 +17,11 @@ import com.soywiz.kds.iterators.fastForEachWithIndex
 import kotlin.test.assertNotNull
 
 val CLILOGO = bold(
-  """ ________  _______   ___      ___ ________ ___  ___       _______      
-|\   ___ \|\  ___ \ |\  \    /  /|\  _____\\  \|\  \     |\  ___ \     
-\ \  \_|\ \ \   __/|\ \  \  /  / | \  \__/\ \  \ \  \    \ \   __/|    
- \ \  \ \\ \ \  \_|/_\ \  \/  / / \ \   __\\ \  \ \  \    \ \  \_|/__  
-  \ \  \_\\ \ \  \_|\ \ \    / /   \ \  \_| \ \  \ \  \____\ \  \_|\ \ 
+  """ ________  _______   ___      ___ ________ ___  ___       _______
+|\   ___ \|\  ___ \ |\  \    /  /|\  _____\\  \|\  \     |\  ___ \
+\ \  \_|\ \ \   __/|\ \  \  /  / | \  \__/\ \  \ \  \    \ \   __/|
+ \ \  \ \\ \ \  \_|/_\ \  \/  / / \ \   __\\ \  \ \  \    \ \  \_|/__
+  \ \  \_\\ \ \  \_|\ \ \    / /   \ \  \_| \ \  \ \  \____\ \  \_|\ \
    \ \_______\ \_______\ \__/ /     \ \__\   \ \__\ \_______\ \_______\
     \|_______|\|_______|\|__|/       \|__|    \|__|\|_______|\|_______|
 """
@@ -66,11 +66,9 @@ class DevfileCLI : CliktCommand(
   }
 
   override fun run() {
-//    t.println(CLILOGO)
     ops.fastForEach { s ->
-      val operationName = s.substringBefore('.')
-      dbg(s.drop(operationName.length))
-      val operationArguments = s.drop(operationName.length).splitToSequence('.').filter { it.isNotEmpty() }
+      val operationName = s.substringBefore('+')
+      val operationArguments = s.drop(operationName.length).splitToSequence('+').filter { it.isNotEmpty() }
 
       val op = Devfile.ops.find { it.name == operationName }
       op ?: exitError(Msg.errorNotAnOperation(operationName))
@@ -106,7 +104,6 @@ class DevfileCLI : CliktCommand(
         if (operationOptions.keep) add(OpOptions.KEEP)
         if (operationOptions.time) add(OpOptions.TIME)
       }
-      dbgExec { dbg(options) }
       op.execute(options, operationArguments)
     }
   }

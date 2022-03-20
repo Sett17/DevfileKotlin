@@ -70,7 +70,7 @@ object Devfile {
       }
       dev("Creating Devfile with example operation")
       file.writeString(
-        """***op|Automatically generated operation*p*.NAME*
+        """***op|Automatically generated operation*p*+NAME*
 echo -e "\e[31m\e[1m!!! ${"$"}{DEV_NAME:-You} still needs to implement an operation here !!!\e[0m""""
       )
     }

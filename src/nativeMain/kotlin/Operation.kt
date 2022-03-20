@@ -33,7 +33,7 @@ class Operation(val name: String, val options: Sequence<OpOptions>, val argument
 
     val argumentMap = mutableMapOf<String, String>()
     operationArguments.forEachIndexed { index, s ->
-      val z = arguments.getOrNull(index)?.removePrefix(".") ?: exitError("No argument found in operation for #${index + 1} supplied argument")
+      val z = arguments.getOrNull(index)?.removePrefix("+") ?: exitError("No argument found in operation for #${index + 1} supplied argument")
       argumentMap[z as String] = s
       script = script.replace("\\{\\{ *$z *}}".toRegex(RegexOption.IGNORE_CASE), s)
     }
@@ -82,8 +82,8 @@ fun Sequence<String>.parse(): Pair<Sequence<OpOptions>, List<String>> {
     it.isNotEmpty()
   }
   return Pair(
-    z1.filterNot { it.first() == '.' }
+    z1.filterNot { it.first() == '+' }
       .map { OpOptions::option.find(it) ?: DUMMY.also { _ -> t.forStdErr().danger("'$it' is not a valid option. See 'Operation Options' under dev -h or all supported options") } },
-    z1.filter { it.first() == '.' }.toList()
+    z1.filter { it.first() == '+' }.toList()
   )
 }
