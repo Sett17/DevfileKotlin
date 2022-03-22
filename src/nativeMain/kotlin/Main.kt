@@ -48,7 +48,7 @@ class DevfileCLI : CliktCommand(
   val info by option("-i", "--info", help = Msg.infoOptionHelp).flag(default = false)
 
   val ops: List<String> by argument(
-    name = "OPERATIONS.ARGUMENT...",
+    name = "OPERATIONS+ARGUMENT...",
     help = Msg.opsArgumentHelp
   ).multiple(required = true)
 
