@@ -21,7 +21,7 @@ fun CliktCommand.eagers() {
           row(
             it.name,
             it.options.map { o -> o.toStringShort() }.joinToString(" "),
-            it.arguments.joinToString(" "),
+            it.arguments.map { a -> a.removePrefix("+") }.joinToString(" "),
             it.script.lines().size,
             it.description
           )
