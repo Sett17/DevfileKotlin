@@ -35,7 +35,7 @@ object Devfile {
           val nameDescription = it.trimStart('*').substringBefore('*')
           val name = nameDescription.substringBefore("|")
           val description = nameDescription.substringAfterOrNull("|") ?: ""
-          val options = it.drop(nameDescription.length + 3).splitToSequence('*')
+          val options = it.trimStart('*').drop(nameDescription.length).splitToSequence('*')
           val z = options.parse()
           currentZOperation = Operation(name, z.first, z.second, description = description)
           if (currentZOperation != null && OpOptions.DUMMY in currentZOperation!!.options) {

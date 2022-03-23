@@ -19,6 +19,10 @@ script line N
 
 ## Explanations
 
+### Declaration line
+  - The declaration MUST be on one line
+  - All `*` at the start of the line are trimmed
+
 ### OPERATION_NAME
   - MUST NOT include `*` character
   - SHOULD only include alphanumeric characters
