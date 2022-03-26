@@ -58,6 +58,11 @@ fun CliktCommand.eagers() {
     }
   }
 
+  eagerOption("--version", help = "TODO") {
+    t.println("Devfile version $version")
+    exitProcess(0)
+  }
+
   eagerOption(
     "-D",
     "-DD",

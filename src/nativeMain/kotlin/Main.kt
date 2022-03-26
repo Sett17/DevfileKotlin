@@ -53,7 +53,6 @@ class DevfileCLI : CliktCommand(
   ).multiple(required = true)
 
   init {
-    versionOption("v0.0.8")
     context { helpFormatter = ColorHelpFormatter() }
 
     dbg("Devfile ${if (extendedDebugMode) "extended" else ""} debug output is enabled")

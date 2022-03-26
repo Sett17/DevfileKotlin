@@ -26,6 +26,7 @@ Well, here is a solution that comes as just an executable for each platform and 
   const val cleanOptionHelp = "Removes all output related to Devfile. To e.g. use it with pipes. Some debug messages will still be printed, when the debug mode is enabled"
 
   const val debugOptionHelp = "Enables output of debug messages for Devfile itself. This has to be its own option (or be the first one in concatenated options), because it is parsed separately. -DD prints even more Information"
+  const val versionOptionHelp = "Prints the current version and exit"
   const val cleanTmpOptionHelp = "Deletes all .dev files in the platform corresponding tmp directory"
   const val listOptionHelp = "Lists all operations and exit"
   const val editOptionHelp = "Opens the Devfile in an applicable Editor. \$EDITOR or vim under Linux, and the default editor for the format under Windows"
