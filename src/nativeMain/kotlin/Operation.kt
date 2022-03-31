@@ -66,6 +66,7 @@ enum class OpOptions(val option: String) {
   KEEP("k"),
   TIME("t"),
   CLEAN("c"),
+  WSLWINDOWS("w"),
   DUMMY("DUMMY");
 
   fun toStringShort(): String {

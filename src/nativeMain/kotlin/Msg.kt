@@ -1,5 +1,6 @@
 import com.github.ajalt.mordant.rendering.TextColors.*
 
+@ThreadLocal
 object Msg {
 //  val helpText = "Tired of the weird quirks of make? Annoyed of making typos in long chained commands, or getting to them via reverse-i-search?\n" +
 //      "Well, here is a solution that comes as just an executable for each platform and with an extensive help command.\n" +
@@ -16,7 +17,7 @@ object Msg {
 $CLILOGO ```
 Tired of the weird quirks of make? Annoyed of making typos in long chained commands, or getting to them via reverse-i-search?
 Well, here is a solution that comes as just an executable for each platform and with an extensive help command.""" +
-"\nby Sett | ${brightGreen("https://github.com/Sett17/Devfile")}"
+      "\nby Sett | ${brightGreen("https://github.com/Sett17/Devfile")}"
 
   const val operationOptionsHelp = "All of these options can also be used as option letters in the Devfile"
   const val printOptionHelp = "Prints the corresponding script for the operation and execute it"
@@ -24,8 +25,10 @@ Well, here is a solution that comes as just an executable for each platform and 
   const val keepOptionHelp = "Keeps the script file after execution"
   const val timeOptionHelp = "Times the execution of the Operation, and prints it afterwards"
   const val cleanOptionHelp = "Removes all output related to Devfile. To e.g. use it with pipes. Some debug messages will still be printed, when the debug mode is enabled"
+  var wslWindowsOptionHelp = "When running on WSL2, execute the script on the windows host. No effect otherwise. ${gray("Currently only works with windows on C drive and mounted inside WSL2")}"
 
-  const val debugOptionHelp = "Enables output of debug messages for Devfile itself. This has to be its own option (or be the first one in concatenated options), because it is parsed separately. -DD prints even more Information"
+  const val debugOptionHelp =
+    "Enables output of debug messages for Devfile itself. This has to be its own option (or be the first one in concatenated options), because it is parsed separately. -DD prints even more Information"
   const val versionOptionHelp = "Prints the current version and exit"
   const val cleanTmpOptionHelp = "Deletes all .dev files in the platform corresponding tmp directory"
   const val listOptionHelp = "Lists all operations and exit"
@@ -35,5 +38,5 @@ Well, here is a solution that comes as just an executable for each platform and 
 
   const val opsArgumentHelp = "Which operation you want to execute, in the order you want them to execute. The arguments name should be supplied in the same order as defied in the Devfile"
 
-  fun errorNotAnOperation(s: Any) : String = "$s is not an operation! Use 'dev -l' to show all operations"
+  fun errorNotAnOperation(s: Any): String = "$s is not an operation! Use 'dev -l' to show all operations"
 }

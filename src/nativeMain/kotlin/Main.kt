@@ -14,6 +14,7 @@ import com.github.ajalt.mordant.rendering.TextStyles.*
 import com.github.ajalt.mordant.terminal.Terminal
 import com.soywiz.kds.iterators.fastForEach
 import com.soywiz.kds.iterators.fastForEachWithIndex
+import com.soywiz.korio.lang.Environment
 import kotlin.test.assertNotNull
 
 val CLILOGO = bold(
@@ -37,6 +38,7 @@ class OperationOptions : OptionGroup(name = "Operation Options", help = Msg.oper
   val keep by option("-k", "--keep", help = Msg.keepOptionHelp).flag(default = false)
   val time by option("-t", "--time", help = Msg.timeOptionHelp).flag(default = false)
   val clean by option("-c", "--clean", help = Msg.cleanOptionHelp).flag(default = false)
+  val wslwindows by option("-w", "--wslwindows", help = Msg.wslWindowsOptionHelp).flag(default = false)
 }
 
 class DevfileCLI : CliktCommand(
@@ -102,6 +104,7 @@ class DevfileCLI : CliktCommand(
         if (operationOptions.quiet) add(OpOptions.QUIET)
         if (operationOptions.keep) add(OpOptions.KEEP)
         if (operationOptions.time) add(OpOptions.TIME)
+        if (operationOptions.wslwindows) add(OpOptions.WSLWINDOWS)
       }
       op.execute(options, operationArguments)
     }

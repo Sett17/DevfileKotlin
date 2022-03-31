@@ -5,6 +5,7 @@ import com.github.ajalt.mordant.rendering.TextColors.green
 import com.github.ajalt.mordant.rendering.TextColors.yellow
 import com.github.ajalt.mordant.rendering.TextStyles.*
 import com.soywiz.klock.measureTime
+import com.soywiz.korio.file.VfsFile
 import kotlin.math.min
 import kotlin.system.exitProcess
 
@@ -54,3 +55,5 @@ class ColorHelpFormatter : CliktHelpFormatter(showDefaultValues = true) {
   override fun optionMetavar(option: HelpFormatter.ParameterHelp.Option) = green(super.optionMetavar(option))
 }
 
+val VfsFile.windowsPath: String
+  get() = this.absolutePath.replace("/mnt/c", "C:")
