@@ -58,6 +58,7 @@ object Specifics {
   }
 
   fun edit() {
+    Devfile.parse()
     var howToEdit = ""
     when (currentOS) {
       OS.LINUX       -> {

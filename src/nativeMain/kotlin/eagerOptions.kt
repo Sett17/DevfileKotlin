@@ -11,6 +11,7 @@ import kotlin.system.exitProcess
 
 fun CliktCommand.eagers() {
   eagerOption("-l", "--list", help = Msg.listOptionHelp) {
+    Devfile.parse()
     t.println(CLILOGO)
     t.println(table {
       align = TextAlign.CENTER
@@ -68,5 +69,4 @@ fun CliktCommand.eagers() {
     "-DD",
     help = Msg.debugOptionHelp
   ) {}
-
 }

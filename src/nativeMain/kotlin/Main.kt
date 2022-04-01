@@ -46,27 +46,22 @@ class DevfileCLI : CliktCommand(
   help = Msg.helpText,
   printHelpOnEmptyArgs = true,
 ) {
-  val operationOptions by OperationOptions()
-  val info by option("-i", "--info", help = Msg.infoOptionHelp).flag(default = false)
+  private val operationOptions by OperationOptions()
+  private val info by option("-i", "--info", help = Msg.infoOptionHelp).flag(default = false)
 
-  val ops: List<String> by argument(
+  private val ops: List<String> by argument(
     name = "OPERATIONS+ARGUMENT...",
     help = Msg.opsArgumentHelp
   ).multiple(required = true)
 
   init {
     context { helpFormatter = ColorHelpFormatter() }
-
-    dbg("Devfile ${if (extendedDebugMode) "extended" else ""} debug output is enabled")
-    dbgTime("parsing") {
-      Devfile.parse()
-    }
-    dbg("${Devfile.ops.size} ops were parsed")
-
     eagers()
+    dbg("Devfile ${if (extendedDebugMode) "extended" else ""} debug output is enabled")
   }
 
   override fun run() {
+    Devfile.parse()
     ops.fastForEach { s ->
       val operationName = s.substringBefore('+')
       val operationArguments = s.drop(operationName.length).splitToSequence('+').filter { it.isNotEmpty() }

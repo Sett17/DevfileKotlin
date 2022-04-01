@@ -16,46 +16,49 @@ object Devfile {
   var currentZOperation: Operation? = null
 
   fun parse() {
-    runBlocking {
-      var file = VfsFile(vfs, "Devfile")
-      if (!file.exists()) {
-        file = VfsFile(vfs, "dev.file")
+    dbgTime("parsing") {
+      runBlocking {
+        var file = VfsFile(vfs, "Devfile")
         if (!file.exists()) {
-          exitError("Couldn't read Devfile or dev.file", 2)
-        }
-      }
-      devfile = file
-      val zScript = StringBuilder()
-      devfile.readLines().forEach {
-        if (it.startsWith("***")) {
-          currentZOperation?.let { op ->
-            op.script = zScript.trimEnd().toString()
-            ops.add(op)
+          file = VfsFile(vfs, "dev.file")
+          if (!file.exists()) {
+            exitError("Couldn't read Devfile or dev.file", 2)
           }
-          val nameDescription = it.trimStart('*').substringBefore('*')
-          val name = nameDescription.substringBefore("|")
-          val description = nameDescription.substringAfterOrNull("|") ?: ""
-          val options = it.trimStart('*').drop(nameDescription.length).splitToSequence('*')
-          val z = options.parse()
-          currentZOperation = Operation(name, z.first, z.second, description = description)
-          if (currentZOperation != null && OpOptions.DUMMY in currentZOperation!!.options) {
-            exitError("Error parsing operation '${currentZOperation!!.name}'")
-          }
-          zScript.clear()
-        } else if (currentZOperation != null) {
-          zScript.append(it)
-          zScript.append('\n')
         }
-      }
-      currentZOperation?.let { op ->
-        op.script = zScript.trimEnd().toString()
-        ops.add(op)
-      }
-      completionCandidates = CompletionCandidates.Fixed(ops.map { it.name.lowercase() }.toSet())
-      dbgExec {
-        ops.forEach(::dbg)
+        devfile = file
+        val zScript = StringBuilder()
+        devfile.readLines().forEach {
+          if (it.startsWith("***")) {
+            currentZOperation?.let { op ->
+              op.script = zScript.trimEnd().toString()
+              ops.add(op)
+            }
+            val nameDescription = it.trimStart('*').substringBefore('*')
+            val name = nameDescription.substringBefore("|")
+            val description = nameDescription.substringAfterOrNull("|") ?: ""
+            val options = it.trimStart('*').drop(nameDescription.length).splitToSequence('*')
+            val z = options.parse()
+            currentZOperation = Operation(name, z.first, z.second, description = description)
+            if (currentZOperation != null && OpOptions.DUMMY in currentZOperation!!.options) {
+              exitError("Error parsing operation '${currentZOperation!!.name}'")
+            }
+            zScript.clear()
+          } else if (currentZOperation != null) {
+            zScript.append(it)
+            zScript.append('\n')
+          }
+        }
+        currentZOperation?.let { op ->
+          op.script = zScript.trimEnd().toString()
+          ops.add(op)
+        }
+        completionCandidates = CompletionCandidates.Fixed(ops.map { it.name.lowercase() }.toSet())
+        dbgExec {
+          ops.forEach(::dbg)
+        }
       }
     }
+    dbg("${ops.size} ops were parsed")
   }
 
   fun create() {
