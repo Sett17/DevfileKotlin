@@ -43,6 +43,8 @@ object Specifics {
           else           -> exitError("There is currently no support for executing operations on $currentOS", 38)
         }
 
+        dbg("OS: ${currentOS.name}")
+
         val tmpVfs = if (OpOptions.WSLWINDOWS in options) {
           jailedLocalVfs("/mnt/c/Windows/Temp").vfs
         } else {
@@ -59,24 +61,7 @@ object Specifics {
 
   fun edit() {
     Devfile.parse()
-    var howToEdit = ""
-    when (currentOS) {
-      OS.LINUX       -> {
-        howToEdit = "\"\${EDITOR:-vim}\" "
-      }
-      OS.WSL_LINUX   -> {
-        howToEdit = "\"\${EDITOR:-vim}\" "
-      }
-      OS.WSL_WINDOWS -> {
-        howToEdit = "\"\${EDITOR:-vim}\" "
-      }
-      OS.WINDOWS     -> {
-        howToEdit = "start"
-      }
-
-      else           -> exitError("There is currently no support for editing files on $currentOS", 38)
-    }
-    system("$howToEdit ${Devfile.devfile.absolutePath}")
+    system("${currentOS.howToEdit} ${Devfile.devfile.absolutePath}")
   }
 }
 
@@ -86,35 +71,40 @@ enum class OS {
     override val howToExec = "/bin/bash"
     override val silence = "> /dev/null"
     override val extension = ".dev"
-
+    override val howToEdit = "\"\${EDITOR:-vim}\" "
   },
   WINDOWS {
     override val suffixLines = listOf("@echo on")
     override val howToExec = ""
     override val silence = ">NUL"
     override val extension = ".dev.bat"
+    override val howToEdit = "start"
   },
   WSL_LINUX {
     override val suffixLines = LINUX.suffixLines
     override val howToExec = LINUX.howToExec
     override val silence = LINUX.silence
     override val extension = LINUX.extension
+    override val howToEdit = LINUX.howToEdit
   },
   WSL_WINDOWS {
     override val suffixLines = WINDOWS.suffixLines
     override val howToExec = "/mnt/c/Windows/System32/cmd.exe /c"
     override val silence = LINUX.silence
     override val extension = WINDOWS.extension
+    override val howToEdit = LINUX.howToEdit
   },
   UNSUPPORTED {
     override val suffixLines = listOf("")
     override val howToExec = ""
     override val silence = ""
     override val extension = ""
+    override val howToEdit = ""
   };
 
   abstract val suffixLines: List<String>
   abstract val howToExec: String
   abstract val silence: String
   abstract val extension: String
+  abstract val howToEdit: String
 }
