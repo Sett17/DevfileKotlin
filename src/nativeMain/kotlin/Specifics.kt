@@ -2,6 +2,7 @@ import com.soywiz.korio.file.VfsFile
 import com.soywiz.korio.file.std.jailedLocalVfs
 import com.soywiz.korio.file.std.tempVfs
 import kotlinx.coroutines.runBlocking
+import platform.posix.mkdir
 import platform.posix.system
 
 @ThreadLocal
@@ -52,6 +53,7 @@ object Specifics {
         }
         VfsFile(tmpVfs, "devfiles/")
         val tmpFile = VfsFile(tmpVfs, "devfiles/${script.hashCode()}${currentOS.extension}").also { dbg(it.windowsPath) }
+        tmpFile.parent.mkdir().also { dbg("make parent dir mkdir: $it") }
         tmpFile.writeLines(prefixLines + script.lines() + currentOS.suffixLines)
         system("${currentOS.howToExec} ${tmpFile.windowsPath} ${if (OpOptions.QUIET in options) currentOS.silence else ""}")
         if (OpOptions.KEEP !in options) tmpFile.delete()
